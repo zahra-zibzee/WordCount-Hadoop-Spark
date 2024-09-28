@@ -1,0 +1,8 @@
+Average age of survivors: 28.343689655172415
+Average age of non-survivors: 30.62617924528302
+
+Hypothesis: “The average age of passengers who survived the sinking of the Titanic is not very different 
+from (i.e., neither much below nor much above) the average age of passengers who did not survive the sinking 
+of the Titanic.”
+
+Based on the results that we got, we can accept the Hypothesis.

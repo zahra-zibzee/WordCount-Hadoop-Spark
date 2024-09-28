@@ -1,0 +1,110 @@
+
+
+# To connect to HPC :
+ssh -p 8022 shashemi@access-iris.uni.lu
+
+# To connect in vs code:
+Cmd+Shift+P -> iris cluster
+
+# To transfer a file to HPC :
+scp -P 8022 file.format <yourlogin>@access-iris.uni.lu:~/
+(run the above two commands from a local command-line shell on your computer where you downloaded the files from Moodle)
+
+# To open an interactive shell :
+- srun -p interactive --pty bash -i
+- si
+
+
+# To run jar file via spark-submit :
+(access-iris)$ sbatch launch-spark-submit.sh
+
+
+# To run a shell script via spark-shell :
+(access-iris)$ srun -p batch --time=00:30:0 -N 2 -c 12 --pty bash -i
+(iris-node)$ ./launch-spark-shell.sh
+
+# Note that you may as well need to change the file permission using chmod +x launch-spark-shell.sh before running the script.
+
+
+# compile the WordCount.java files and put the class files into a Jar file called WordCount.jar
+javac -classpath "$HADOOP_HOME/share/hadoop/common/*:$HADOOP_HOME/share/hadoop/mapreduce/*:$HADOOP_HOME/share/hadoop/common/lib/*" *.java
+
+# use class files to create a jar file
+jar -cvf WordCount.jar *.class
+
+# next, we can remove other files
+rm -r *.class
+
+# run hadoop 
+hadoop jar WordCount.jar HadoopWordCount ./AA ./hadoop-output
+
+##### IDE INTELLIJ IDEA ######
+
+# Import the hadoop-common-2.7.7.jar and hadoop-mapreduce-client-core-2.7.7.jar libraries from your local Hadoop installation as external jars into the Java build path of your Eclipse project
+File > project structure > libraries > +
+
+Shift + Cmd + G
+
+my addresses:
+
+/opt/homebrew/Cellar/hadoop/<version>/libexec/share/hadoop/common
+/opt/homebrew/Cellar/hadoop/<version>/libexec/share/hadoop/mapreduce
+
+
+# Create a jar file in IDE
+File > project structure > Artifacts > + 
+
+
+Build > Build Artifacts...
+
+hadoop jar Hadoop-Word-Count-IDE.jar ./AA ./hadoop-output
+
+
+******** Scala ***********
+
+# to compile
+scalac -classpath $(echo $SPARK_HOME/jars/*.jar | tr ' ' ':') SparkWordCount.scala
+
+# create jar file
+jar -cvf ./SparkWordCount.jar *.class
+
+# now run
+spark-submit --class SparkWordCount ./SparkWordCount.jar ./AA ./SparkOutput
+
+
+INTELLIJ
+spark-submit --class SparkWordCount /Users/zahra/Desktop/Uni Lu/Big Data/HW0/Spark-IDE/out/artifacts/Spark_IDE_jar/Spark-IDE.jar /Users/zahra/Desktop/Uni Lu/Big Data/HW0/AA ./output
+
+for some reasons, absolute address didn't work and had to move jar file and input folder next to scala 
+spark-submit --class SparkWordCount ./Spark-IDE.jar ./AA ./output
+
+
+##### run java local machine ##### (Zahra)
+
+javac -classpath /Users/zahra/.sdkman/candidates/hadoop/2.7.7/share/hadoop/common/hadoop-common-2.7.7.jar:/Users/zahra/.sdkman/candidates/hadoop/2.7.7/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.7.jar:/Users/zahra/.sdkman/candidates/hadoop/2.7.7/share/hadoop/common/lib/commons-logging-1.1.3.jar HadoopWordCount.java
+
+jar -cvf WordCount.jar *.class
+
+rm -r *.class
+
+hadoop jar WordCount.jar HadoopWordCount /Users/zahra/Desktop/Uni\ Lu/Big\ Data/Wikipedia-En-41784-Articles/AA ./output 
+
+hadoop jar WordCount.jar HadoopWordCount /Users/zahra/Desktop/Uni\ Lu/Big\ Data/Wikipedia-En-41784-Articles/AA ./output_miani ./output
+
+cat ./output/part-r-00000
+
+tail -n 10 ./output/part-r-00000
+
+
+// HPC
+javac -classpath $(hadoop classpath) *.java
+
+
+# going through HPC
+
+module load lang/Java/1.8.0_241
+
+export JAVA_HOME=/opt/apps/resif/iris-rhel8/2020b/broadwell/software/Java/1.8.0_241/
+export HADOOP_HOME=~/hadoop-3.3.6
+export PATH=~/hadoop-3.3.6/bin:$PATH
+
